@@ -7,11 +7,19 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  Todo: a
-    .model({
-      content: a.string(),
+  
+  MCQDB: a.model({
+      question: a.string(),
+      optiona: a.string(),
+      optionb: a.string(),
+      optionc: a.string(),
+      optiond: a.string(),
+      answer: a.string(),
+      topic: a.string(),
+      difficulty: a.string(),
+      explanation: a.string(),
     })
-    .authorization((allow) => [allow.publicApiKey()]),
+    .authorization(allow => [allow.publicApiKey()])
 });
 
 export type Schema = ClientSchema<typeof schema>;
