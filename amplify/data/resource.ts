@@ -19,6 +19,18 @@ const schema = a.schema({
       difficulty: a.string(),
       explanation: a.string(),
     })
+    .authorization(allow => [allow.publicApiKey()]),
+    SCOREDB: a.model({
+      ID: a.string(),
+      score: a.string(),
+      topic: a.string(),
+      difficulty: a.string(),
+    })
+    .authorization(allow => [allow.publicApiKey()]),
+    TOPICDB: a.model({
+      type: a.string(),
+      topic: a.string(),
+    })
     .authorization(allow => [allow.publicApiKey()])
 });
 
