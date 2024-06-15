@@ -11,7 +11,8 @@ import {
 import Root from "./routes/route";
 import { ErrorPage } from "./components/ErrorPage.tsx";
 import { ScorePage } from "./components/ScorePage.tsx";
-import {TestPage} from "./components/TestPage.tsx";
+import { TestPage } from "./components/TestPage.tsx";
+import QuestionPage from "./components/QuestionPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -23,11 +24,16 @@ const router = createBrowserRouter([
         path: "myscore",
         element: <ScorePage />,
       },
-      
-        {
-          path: "test",
-          element: <TestPage />,
-        },
+
+      {
+        path: "test",
+        element: <TestPage />,
+      },
+
+      {
+        path: "exam",
+        element: <QuestionPage />,
+      },
     ],
   },
 ]);
