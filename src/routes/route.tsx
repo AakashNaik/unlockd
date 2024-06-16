@@ -8,14 +8,17 @@ export default function Root() {
     const location = useLocation();
     return (
         <>
-            {(!hideNavbarPaths.includes(location.pathname))?
-            <nav>
-                <Flex justifyContent="flex-end">
-                    <Button backgroundColor={tokens.colors.blue[40]}><Link to={'/test'}>Take Test</Link></Button>
+            {(!hideNavbarPaths.includes(location.pathname)) ?
+                <nav>
+                    <Flex justifyContent="flex-end">
+                        <Button backgroundColor={tokens.colors.blue[40]} ><Link to={'/'} style={{ textDecoration: 'none', color: 'inherit' }}>Home</Link></Button>
 
-                    <Button backgroundColor={tokens.colors.blue[40]}><Link to={'/myscore'}>My Score</Link></Button>
-                </Flex>
-            </nav>:<></>
+
+                        <Button backgroundColor={tokens.colors.blue[40]} ><Link to={'/test'} style={{ textDecoration: 'none', color: 'inherit' }}>Take Test</Link></Button>
+
+                        <Button backgroundColor={tokens.colors.blue[40]}><Link to={'/myscore'} style={{ textDecoration: 'none', color: 'inherit' }}>My Score</Link></Button>
+                    </Flex>
+                </nav> : <></>
             }
             <Outlet />
 

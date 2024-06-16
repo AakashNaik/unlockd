@@ -2,7 +2,7 @@ import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import '@aws-amplify/ui-react/styles.css';
 import { useEffect, useState } from "react";
-import { Button, SelectField, useTheme } from "@aws-amplify/ui-react";
+import { Button, Flex, SelectField, useTheme } from "@aws-amplify/ui-react";
 import { TableComponent } from "./TableComponent";
 const client = generateClient<Schema>();
 import { useNavigate } from 'react-router-dom';
@@ -45,6 +45,7 @@ export function TestPage() {
 
     }
     return (<>
+       <br />
         <SelectField
             label="Section"
             placeholder="Choose Section..."
@@ -52,7 +53,7 @@ export function TestPage() {
             onChange={(e) => setSection(e.target.value)}
             options={[... new Set(tests.map((test) => test.type ?? "Section"))]}
         ></SelectField>
-
+        <br />
         <SelectField
             label="Topic"
             placeholder="Choose Topic..."
@@ -60,10 +61,13 @@ export function TestPage() {
             onChange={(e) => setTopic(e.target.value)}
             options={tests.filter((test) => test.type == section).map((test) => test.topic ?? 'error topic')}
         ></SelectField>
-
+        <br></br>
+        <Flex>
         <Button backgroundColor={tokens.colors.blue[40]} onClick={handleSubmit}>Submit</Button>
 
         <Button backgroundColor={tokens.colors.blue[40]} onClick={navigateToNewPath}>Take Test</Button>
+        </Flex>
+        <br></br>
         {selection.length!==0 && <TableComponent dataSel={selection} handleData={handleData}/>}
     </>)
 
