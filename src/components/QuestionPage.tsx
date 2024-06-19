@@ -5,13 +5,16 @@ import { useEffect, useState } from "react";
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+
 // import { Button, Flex,useTheme } from '@aws-amplify/ui-react';
 // import '@aws-amplify/ui-react/styles.css';
 const client = generateClient<Schema>();
 
 
 export default function QuestionPage() {
-
+    const location = useLocation();
+    const questionfilter =  location.state;
     const [question, setQuestions] = useState<Array<Schema["MCQDB"]["type"]>>([]);
     const [index, setIndex] = useState(0);
     const {
@@ -27,10 +30,20 @@ export default function QuestionPage() {
     
 
     useEffect(() => {
-        client.models.MCQDB.observeQuery().subscribe({
-            next: (data) => setQuestions([...data.items]),
-        });
+
+        const fetchData= async ()=>{
+        const { data: items, errors } = await client.models.MCQDB.list();
+        console.log(errors);
+        console.log(items);
+        console.log(questionfilter);
+        let items2 =items.filter((item)=> questionfilter.some((filterCr: { section: string; topic: string; })=> filterCr.section+'|'+filterCr.topic===item.topic))
+        setQuestions(items2);
+        }
+
+        fetchData();
     }, []);
+
+    //useEffect(()=>{console.log('enter', questionfilter);question.filter((item)=> questionfilter.some((filterCr: { topic: string; type: string; })=> filterCr.topic+'|'+filterCr.type===item.topic))}, [question])
     const responseRef = useRef<Map<string, string>>(new Map());
 
     useEffect(() => {

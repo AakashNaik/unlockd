@@ -15,7 +15,8 @@ export function TestPage() {
     const [selection, setSelection] = useState<{id:string , section: string, topic: string }[]>([]);
     const navigate = useNavigate();
     const navigateToNewPath = () => {
-        navigate('/exam');
+        
+        navigate('/exam', {state: selection});
       };
     
     useEffect(() => {
@@ -27,6 +28,8 @@ export function TestPage() {
     const { tokens } = useTheme();
 
     function handleSubmit() {
+        if(section==='' || topic==='')
+            return;
         const isDuplicate = selection.some(item =>
             item.section === section && item.topic === topic
         );
