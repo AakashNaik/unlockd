@@ -12,44 +12,44 @@
 //     client.models.MCQDB.create({ question: window.prompt("Todo content") });
 //   }
 
-// import {
-//     generateClient
-// } from 'aws-amplify/data';
-// import type {
-//     Schema
-// } from '../../amplify/data/resource'; // Path to your backend resource definition
-// import {
-//     useEffect
-// } from 'react';
+import {
+    generateClient
+} from 'aws-amplify/data';
+import {
+    data,
+    type Schema
+} from '../../amplify/data/resource'; // Path to your backend resource definition
+import {
+    useEffect,
+    useState
+} from 'react';
 
-// const client = generateClient<Schema>();
+const client = generateClient<Schema>();
 
 export function ScorePage() {
 
+    //const [score, setScores] = useState<{score: string|null}[]>([]);
+    useEffect(() => {
 
-    // useEffect(() => {
-
-    //     const storescore = async () => {
-    //         const {
-    //             errors,
-    //             data: scores
-    //         } = await client.models.SCOREDB.create({
-    //             // ID,
-    //             // score: a.string(),
-    //             // topic: a.string(),
-    //             // difficulty: a.string(),
-    //         }, {
-    //             authMode: 'userPool',
-    //         })
-    //     }
-    //     storescore();
-    // }, []);
+        const storescore = async () => {
+            const {           
+                data: scores,
+                
+            } = await client.models.SCOREDB.list({
+                // ID,
+                // score: a.string(),
+                // topic: a.string(),
+                // difficulty: a.string(),
+            })
+            console.log(scores);
+        }
+        storescore();
+    }, []);
 
 
 
     return ( <>
-        <p> Welcome!to the Score </p>
-
+        <p> Welcome to the Score!</p>
         </>)
 
     }
