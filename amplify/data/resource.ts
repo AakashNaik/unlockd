@@ -18,22 +18,20 @@ const schema = a.schema({
     topic: a.string(),
     difficulty: a.string(),
     explanation: a.string(),
-  })
-    .authorization(allow => [allow.publicApiKey()]),
+  }).authorization(allow => [allow.publicApiKey()]),
 
   SCOREDB: a.model({
     ID: a.string(),
     score: a.string(),
     topic: a.string(),
     difficulty: a.string(),
-  })
-    .authorization(allow => [allow.publicApiKey()]),
+    owner: a.string().authorization(allow => [allow.owner().to(['read', 'delete'])]),
+  }).authorization(allow => [allow.owner().to(['create', 'read', 'update'])]),
     
   TOPICDB: a.model({
     type: a.string(),
     topic: a.string(),
-  })
-    .authorization(allow => [allow.publicApiKey()])
+  }).authorization(allow => [allow.publicApiKey()])
 });
 
 export type Schema = ClientSchema<typeof schema>;
