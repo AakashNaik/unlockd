@@ -16,12 +16,12 @@ import {
     generateClient
 } from 'aws-amplify/data';
 import {
-    data,
+    //data,
     type Schema
 } from '../../amplify/data/resource'; // Path to your backend resource definition
 import {
     useEffect,
-    useState
+   // useState
 } from 'react';
 
 const client = generateClient<Schema>();
