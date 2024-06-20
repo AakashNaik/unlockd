@@ -1,5 +1,5 @@
 import { Button, Card, Flex, Radio, RadioGroupField, Text } from '@aws-amplify/ui-react';
-import  { useRef } from 'react';
+import { useRef } from 'react';
 import { useTimer } from 'react-timer-hook';
 import { useEffect, useState } from "react";
 import type { Schema } from "../../amplify/data/resource";
@@ -14,7 +14,7 @@ const client = generateClient<Schema>();
 
 export default function QuestionPage() {
     const location = useLocation();
-    const questionfilter =  location.state;
+    const questionfilter = location.state;
     const [question, setQuestions] = useState<Array<Schema["MCQDB"]["type"]>>([]);
     const [index, setIndex] = useState(0);
     const {
@@ -27,17 +27,19 @@ export default function QuestionPage() {
     const [prevbuttonstate, setprevbuttonstate] = useState(false);
     const [nextbuttonstate, setnextbuttonstate] = useState(false);
     const navigate = useNavigate();
-    
+
 
     useEffect(() => {
 
-        const fetchData= async ()=>{
-        const { data: items, errors } = await client.models.MCQDB.list();
-        console.log(errors);
-        console.log(items);
-        console.log(questionfilter);
-        let items2 =items.filter((item)=> questionfilter.some((filterCr: { section: string; topic: string; })=> filterCr.section+'|'+filterCr.topic===item.topic))
-        setQuestions(items2);
+        const fetchData = async () => {
+            let filterMembers = questionfilter.map((item: { section: string; topic: string; })=> JSON.parse(`{"${"topic"}":{"eq":"${item.section+"|"+item.topic}"}}`));
+            console.log(filterMembers)
+            const { data: items, errors } = await client.models.MCQDB.list({ filter: { or: filterMembers }});
+            console.log(errors);
+            console.log(items);
+            //console.log(questionfilter);
+            //let items2 = items.filter((item) => questionfilter.some((filterCr: { section: string; topic: string; }) => filterCr.section + '|' + filterCr.topic === item.topic))
+            setQuestions(items);
         }
 
         fetchData();
@@ -68,13 +70,12 @@ export default function QuestionPage() {
         return time;
     }
 
-    function givescore()
-    {
-        let score =0;
-        let index1=0;
+    function givescore() {
+        let score = 0;
+        let index1 = 0;
         question.forEach(() => {
             if (responseRef.current.has(index1.toString())) {
-                if ((responseRef.current.get(index1.toString())) === "option"+question[index1].answer) {
+                if ((responseRef.current.get(index1.toString())) === "option" + question[index1].answer) {
                     score += 3;
                 } else {
                     score -= 1;
@@ -83,7 +84,7 @@ export default function QuestionPage() {
                 score += 0;
             }
         });
-        alert('your score is: '+ score);
+        alert('your score is: ' + score);
         navigate('/');
 
     }
@@ -100,13 +101,11 @@ export default function QuestionPage() {
             alert('Select an response. To go to next question press next. for previous question press Prev')
         else {
             storeAnswer(value, index);
-            if(index< question.length-1)
-            {
+            if (index < question.length - 1) {
                 setIndex(index + 1);
                 setValue('');
             }
-            else
-            {
+            else {
                 alert("Do you want to review or finish the test?");
                 givescore();
             }
