@@ -10,13 +10,14 @@ export const auth = defineAuth({
     externalProviders: {
       google: {
         clientId: secret('GOOGLE_CLIENT_ID'),
-        clientSecret: secret('GOOGLE_CLIENT_SECRET')
+        clientSecret: secret('GOOGLE_CLIENT_SECRET'),
+        scopes: ['email'],
       },
       callbackUrls: [
-        'http://localhost:3000/',
-        'https://mywebsite.com/profile'
+        
+        'https://dev.d2altprvb03up9.amplifyapp.com'
       ],
-      logoutUrls: ['http://localhost:3000/', 'https://mywebsite.com'],
+      logoutUrls: [ 'https://dev.d2altprvb03up9.amplifyapp.com'],
     }
   },
 });

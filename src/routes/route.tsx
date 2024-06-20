@@ -1,4 +1,4 @@
-import { Button, Flex, useTheme } from '@aws-amplify/ui-react';
+import { Authenticator, Button, Flex, useTheme } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { Outlet, Link, useLocation } from "react-router-dom";
 export default function Root() {
@@ -8,6 +8,9 @@ export default function Root() {
     const location = useLocation();
     return (
         <>
+        <Authenticator socialProviders={[ 'google']}>
+        {({  }) => (
+            <>
             {(!hideNavbarPaths.includes(location.pathname)) ?
                 <nav>
                     <Flex justifyContent="flex-end">
@@ -21,6 +24,9 @@ export default function Root() {
                 </nav> : <></>
             }
             <Outlet />
+            </>
+        )}
+            </Authenticator>
 
         </>
     );
