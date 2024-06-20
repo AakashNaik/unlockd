@@ -40,6 +40,7 @@ export function ScorePage() {
                 // score: a.string(),
                 // topic: a.string(),
                 // difficulty: a.string(),
+                authMode: 'userPool',
             })
             console.log(scores);
         }
