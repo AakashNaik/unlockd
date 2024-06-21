@@ -14,10 +14,10 @@ export const auth = defineAuth({
         scopes: ['email'],
       },
       callbackUrls: [
-        
+        'http://localhost:5173/',
         'https://dev.d2altprvb03up9.amplifyapp.com'
       ],
-      logoutUrls: [ 'https://dev.d2altprvb03up9.amplifyapp.com'],
+      logoutUrls: [ 'http://localhost:5173/','https://dev.d2altprvb03up9.amplifyapp.com'],
     }
   },
 });
