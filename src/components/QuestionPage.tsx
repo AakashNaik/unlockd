@@ -107,19 +107,24 @@ export default function QuestionPage() {
     });
     alert("your score is: " + score + "thank you for taking test");
     const storescore = async (key: [string,string], value:number[]) => {
-      await client.models.SCOREDB.create(
+        console.log(key,value,"keyvalue")
+        const { errors, data: newTodo } =await client.models.SCOREDB.create(
         {
           
           score: value.reduce((acc, cur) => acc + cur, 0).toString(),
           topic: key[0],
           difficulty: key[1],
-          qNo : value.length.toString(),
+          qNo: value.length.toString(),
         },
         {
           authMode: "userPool",
         }
       );
+      console.log("errors is", errors);
+        console.log("data: ",newTodo);
     };
+    
+    console.log("Score is:",scoreobj);
     scoreobj.forEach((value,key)=>{storescore(key,value)});
 
     navigate("/");
