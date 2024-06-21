@@ -25,14 +25,11 @@ export function ScorePage() {
   useEffect(() => {
     const storescore = async () => {
       const { data: scores } = await client.models.SCOREDB.list({
-        // ID,
-        // score: a.string(),
-        // topic: a.string(),
-        // difficulty: a.string(),
         authMode: "userPool",
         selectionSet: ["score", "topic", "difficulty", "qNo","id","createdAt"],
       });
       console.log(scores);
+      scores.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       setScores([...scores]);
     };
     storescore();

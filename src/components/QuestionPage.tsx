@@ -14,8 +14,7 @@ import { generateClient } from "aws-amplify/data";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
-// import { Button, Flex,useTheme } from '@aws-amplify/ui-react';
-// import '@aws-amplify/ui-react/styles.css';
+
 const client = generateClient<Schema>();
 
 export default function QuestionPage() {
@@ -25,7 +24,7 @@ export default function QuestionPage() {
   const [index, setIndex] = useState(0);
   const { seconds, minutes, hours } = useTimer({
     expiryTimestamp: getExpiryTimestamp(),
-    onExpire: () => console.warn("onExpire called"),
+    onExpire: () => {console.warn("onExpire called");givescore()},
   });
   //const [response, setResponse] = useState<{ response: string, qNo: number }[]>([]);
   const [value, setValue] = useState("");
@@ -41,21 +40,15 @@ export default function QuestionPage() {
             `{"${"topic"}":{"eq":"${item.section + "|" + item.topic}"}}`
           )
       );
-      console.log(filterMembers);
-      const { data: items, errors } = await client.models.MCQDB.list({
+      const { data: items } = await client.models.MCQDB.list({
         filter: { or: filterMembers },
       });
-      console.log(errors);
-      console.log(items);
-      //console.log(questionfilter);
-      //let items2 = items.filter((item) => questionfilter.some((filterCr: { section: string; topic: string; }) => filterCr.section + '|' + filterCr.topic === item.topic))
       setQuestions(items);
     };
 
     fetchData();
   }, []);
 
-  //useEffect(()=>{console.log('enter', questionfilter);question.filter((item)=> questionfilter.some((filterCr: { topic: string; type: string; })=> filterCr.topic+'|'+filterCr.type===item.topic))}, [question])
   const responseRef = useRef<Map<string, string>>(new Map());
 
   useEffect(() => {
@@ -81,36 +74,55 @@ export default function QuestionPage() {
     let score = 0;
     let scoreobj = new Map();
     let index1 = 0;
-    const updateMap = (map: Map<[string,string],number[]>,key: [string, string],valueToAdd: number)=>{if (map.has(key)) {
-        map.set(key, [...(map.get(key)||[]) ,valueToAdd]);
-    } else {
+    const updateMap = (
+      map: Map<[string, string], number[]>,
+      key: [string, string],
+      valueToAdd: number
+    ) => {
+      if (map.has(key)) {
+        map.set(key, [...(map.get(key) || []), valueToAdd]);
+      } else {
         map.set(key, [valueToAdd]);
-    }}
+      }
+    };
+
+
     question.forEach(() => {
       if (responseRef.current.has(index1.toString())) {
         if (
           responseRef.current.get(index1.toString()) ===
           "option" + question[index1].answer
         ) {
-          updateMap(scoreobj,[question[index1].topic||'',question[index1].difficulty||''],3);
+          updateMap(
+            scoreobj,
+            [question[index1].topic || "", question[index1].difficulty || ""],
+            3
+          );
           score += 3;
         } else {
-            updateMap(scoreobj,[question[index1].topic||'',question[index1].difficulty||''],-1);
-          
-            score -= 1;
+          updateMap(
+            scoreobj,
+            [question[index1].topic || "", question[index1].difficulty || ""],
+            -1
+          );
+
+          score -= 1;
         }
       } else {
-        updateMap(scoreobj,[question[index1].topic||'',question[index1].difficulty||''],0);
-          
+        updateMap(
+          scoreobj,
+          [question[index1].topic || "", question[index1].difficulty || ""],
+          0
+        );
+
         score += 0;
       }
     });
-    alert("your score is: " + score + "thank you for taking test");
-    const storescore = async (key: [string,string], value:number[]) => {
-        console.log(key,value,"keyvalue")
-        const { errors, data: newTodo } =await client.models.SCOREDB.create(
+
+    alert("your score is: " + score + "!!Thank you for taking test");
+    const storescore = async (key: [string, string], value: number[]) => {
+      await client.models.SCOREDB.create(
         {
-          
           score: value.reduce((acc, cur) => acc + cur, 0).toString(),
           topic: key[0],
           difficulty: key[1],
@@ -120,15 +132,15 @@ export default function QuestionPage() {
           authMode: "userPool",
         }
       );
-      console.log("errors is", errors);
-        console.log("data: ",newTodo);
     };
-    
-    console.log("Score is:",scoreobj);
-    scoreobj.forEach((value,key)=>{storescore(key,value)});
+
+    scoreobj.forEach((value, key) => {
+      storescore(key, value);
+    });
 
     navigate("/");
   }
+
   function storeAnswer(value: string, index: number) {
     //let curresponse = { response: value, qNo: index };
     console.log("response is ", responseRef.current);
@@ -172,14 +184,7 @@ export default function QuestionPage() {
         Time: {hours}:{minutes < 10 ? "0" + minutes : minutes}:
         {seconds < 10 ? "0" + seconds : seconds}
       </div>
-      {/* <p>{isRunning ? 'Running' : 'Not running'}</p>
-            <button onClick={start}>Start</button>
-            <button onClick={pause}>Pause</button>
-            <button onClick={resume}>Resume</button> */}
-      {/* <button onClick={() => {
-                const time = getExpiryTimestamp(); // reset timer
-                restart(time);
-            }}>Restart</button> */}
+      
       <br />
       {question.length !== 0 && (
         <Card variation="elevated">

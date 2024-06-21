@@ -33,8 +33,6 @@ export function TestPage() {
         const isDuplicate = selection.some(item =>
             item.section === section && item.topic === topic
         );
-        console.log(section, topic);
-        console.log(selection);
         if (!isDuplicate)
             setSelection([...selection, {id:section+topic, section, topic }]);
         else
@@ -44,8 +42,7 @@ export function TestPage() {
     function handleData(id:String){
        
        setSelection(section => section.filter(item=> item.id!==id));
-       console.log("id is:", id);
-
+      
     }
     return (<>
        <br />
