@@ -79,33 +79,48 @@ export default function QuestionPage() {
 
   function givescore() {
     let score = 0;
+    let scoreobj = new Map();
     let index1 = 0;
+    const updateMap = (map: Map<[string,string],number[]>,key: [string, string],valueToAdd: number)=>{if (map.has(key)) {
+        map.set(key, [...(map.get(key)||[]) ,valueToAdd]);
+    } else {
+        map.set(key, [valueToAdd]);
+    }}
     question.forEach(() => {
       if (responseRef.current.has(index1.toString())) {
         if (
           responseRef.current.get(index1.toString()) ===
           "option" + question[index1].answer
         ) {
+          updateMap(scoreobj,[question[index1].topic||'',question[index1].difficulty||''],3);
           score += 3;
         } else {
-          score -= 1;
+            updateMap(scoreobj,[question[index1].topic||'',question[index1].difficulty||''],-1);
+          
+            score -= 1;
         }
       } else {
+        updateMap(scoreobj,[question[index1].topic||'',question[index1].difficulty||''],0);
+          
         score += 0;
       }
     });
     alert("your score is: " + score + "thank you for taking test");
-    const storescore = async () => {
-        await client.models.SCOREDB.create({
-            ID: '11',
-            score: score.toString(),
-            topic: "Quant",
-            difficulty: "Medium",
-        }, {
-            authMode: 'userPool',
-        })
-    }
-    storescore();
+    const storescore = async (key: [string,string], value:number[]) => {
+      await client.models.SCOREDB.create(
+        {
+          
+          score: value.reduce((acc, cur) => acc + cur, 0).toString(),
+          topic: key[0],
+          difficulty: key[1],
+          qNo : value.length.toString(),
+        },
+        {
+          authMode: "userPool",
+        }
+      );
+    };
+    scoreobj.forEach((value,key)=>{storescore(key,value)});
 
     navigate("/");
   }
