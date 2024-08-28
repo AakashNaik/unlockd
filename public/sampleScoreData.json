@@ -1,0 +1,227 @@
+{
+  "mixTests": [
+    {
+      "id": "mix1",
+      "userId": "user123",
+      "date": "2023-05-01",
+      "score": 85,
+      "correctAnswers": 17,
+      "wrongAnswers": 3
+    },
+    {
+      "id": "mix2",
+      "userId": "user123",
+      "date": "2023-05-15",
+      "score": 90,
+      "correctAnswers": 18,
+      "wrongAnswers": 2
+    },
+    {
+      "id": "mix3",
+      "userId": "user123",
+      "date": "2023-05-30",
+      "score": 95,
+      "correctAnswers": 19,
+      "wrongAnswers": 1
+    },
+    {
+      "id": "mix4",
+      "userId": "user123",
+      "date": "2023-06-14",
+      "score": 88,
+      "correctAnswers": 17,
+      "wrongAnswers": 3
+    },
+    {
+      "id": "mix5",
+      "userId": "user123",
+      "date": "2023-06-29",
+      "score": 92,
+      "correctAnswers": 18,
+      "wrongAnswers": 2
+    },
+    {
+      "id": "mix6",
+      "userId": "user123",
+      "date": "2023-07-13",
+      "score": 97,
+      "correctAnswers": 19,
+      "wrongAnswers": 1
+    },
+    {
+      "id": "mix7",
+      "userId": "user123",
+      "date": "2023-07-28",
+      "score": 93,
+      "correctAnswers": 18,
+      "wrongAnswers": 2
+    },
+    {
+      "id": "mix8",
+      "userId": "user123",
+      "date": "2023-08-12",
+      "score": 98,
+      "correctAnswers": 19,
+      "wrongAnswers": 1
+    },
+    {
+      "id": "mix9",
+      "userId": "user123",
+      "date": "2023-08-27",
+      "score": 91,
+      "correctAnswers": 18,
+      "wrongAnswers": 2
+    },
+    {
+      "id": "mix10",
+      "userId": "user123",
+      "date": "2023-09-11",
+      "score": 96,
+      "correctAnswers": 19,
+      "wrongAnswers": 1
+    },
+    {
+      "id": "mix11",
+      "userId": "user123",
+      "date": "2023-09-26",
+      "score": 94,
+      "correctAnswers": 18,
+      "wrongAnswers": 2
+    },
+    {
+      "id": "mix12",
+      "userId": "user123",
+      "date": "2023-10-11",
+      "score": 99,
+      "correctAnswers": 19,
+      "wrongAnswers": 1
+    },
+    {
+      "id": "mix13",
+      "userId": "user123",
+      "date": "2023-10-26",
+      "score": 100,
+      "correctAnswers": 20,
+      "wrongAnswers": 0
+    }
+  ],
+  "topicTests": [
+    {
+      "id": "topic1",
+      "userId": "user123",
+      "date": "2023-06-01",
+      "score": 80,
+      "correctAnswers": 16,
+      "wrongAnswers": 4,
+      "topic": "Mathematics"
+    },
+    {
+      "id": "topic2",
+      "userId": "user123",
+      "date": "2023-06-15",
+      "score": 85,
+      "correctAnswers": 17,
+      "wrongAnswers": 3,
+      "topic": "Physics"
+    },
+    {
+      "id": "topic3",
+      "userId": "user123",
+      "date": "2023-06-30",
+      "score": 90,
+      "correctAnswers": 18,
+      "wrongAnswers": 2,
+      "topic": "Chemistry"
+    },
+    {
+      "id": "topic4",
+      "userId": "user123",
+      "date": "2023-07-15",
+      "score": 88,
+      "correctAnswers": 17,
+      "wrongAnswers": 3,
+      "topic": "Biology"
+    },
+    {
+      "id": "topic5",
+      "userId": "user123",
+      "date": "2023-07-30",
+      "score": 92,
+      "correctAnswers": 18,
+      "wrongAnswers": 2,
+      "topic": "History"
+    },
+    {
+      "id": "topic6",
+      "userId": "user123",
+      "date": "2023-08-14",
+      "score": 95,
+      "correctAnswers": 19,
+      "wrongAnswers": 1,
+      "topic": "Geography"
+    },
+    {
+      "id": "topic7",
+      "userId": "user123",
+      "date": "2023-08-29",
+      "score": 87,
+      "correctAnswers": 17,
+      "wrongAnswers": 3,
+      "topic": "Literature"
+    },
+    {
+      "id": "topic8",
+      "userId": "user123",
+      "date": "2023-09-13",
+      "score": 93,
+      "correctAnswers": 18,
+      "wrongAnswers": 2,
+      "topic": "Computer Science"
+    },
+    {
+      "id": "topic9",
+      "userId": "user123",
+      "date": "2023-09-28",
+      "score": 96,
+      "correctAnswers": 19,
+      "wrongAnswers": 1,
+      "topic": "Economics"
+    },
+    {
+      "id": "topic10",
+      "userId": "user123",
+      "date": "2023-10-13",
+      "score": 91,
+      "correctAnswers": 18,
+      "wrongAnswers": 2,
+      "topic": "Psychology"
+    },
+    {
+      "id": "topic11",
+      "userId": "user123",
+      "date": "2023-10-28",
+      "score": 97,
+      "correctAnswers": 19,
+      "wrongAnswers": 1,
+      "topic": "Sociology"
+    },
+    {
+      "id": "topic12",
+      "userId": "user123",
+      "date": "2023-11-12",
+      "score": 94,
+      "correctAnswers": 18,
+      "wrongAnswers": 2,
+      "topic": "Political Science"
+    },
+    {
+      "id": "topic13",
+      "userId": "user123",
+      "date": "2023-11-27",
+      "score": 98,
+      "correctAnswers": 19,
+      "wrongAnswers": 1,
+      "topic": "Philosophy"
+    }
+  ]
+}

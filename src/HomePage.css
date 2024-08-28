@@ -1,0 +1,140 @@
+.home-container {
+    width: 100%;
+  }
+  
+  .hero-section {
+    display: flex;
+    flex-direction: row;
+    height: 850px;
+    background-size: cover;
+    justify-content: space-between;
+    width: 99vw;
+    margin: 0;
+    padding: 4px;
+  }
+  
+  .nav-container {
+    padding: 10px;
+  }
+  
+  .nav-button {
+    background-color: transparent;
+    border-radius: 100px;
+    width: 100px;
+  }
+  
+  .nav-button-black {
+    background-color: #000000;
+    border-radius: 100px;
+    width: 125px;
+  }
+  
+  .nav-button-transparent {
+    background-color: transparent;
+    border: none;
+  }
+  
+  .nav-link {
+    text-decoration: none;
+  }
+  
+  .nav-link-white {
+    color: white;
+  }
+  
+  .nav-link-black {
+    color: black;
+  }
+  
+  .hero-content {
+    padding: 10px;
+    margin-right: 20px;
+  }
+  
+  .hero-text-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .cube-section {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    background-color: #000000;
+    height: 50vh; /* This is the current height */
+    
+    align-items: center;
+  }
+  
+  .mountain-section {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  
+  .mountain-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    filter: blur(8px);
+  }
+  
+  .mountain-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 600px;
+    height: 80vh;
+  }
+  
+  .mountain-cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    gap: 10px; /* Reduced spacing between cards */
+  }
+  
+  .bottom-section {
+    display: flex;
+    flex-direction: column;
+    background-color: #000000;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .bottom-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Add this to your GlassLightComponent styles or update the component */
+  .glass-light-component {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: black;
+    height: 22%; /* Increased height of each card */
+  }
+  
+  .cube-section .cube {
+    transform: scale(1); /* Increase the size of the cubes, adjust as needed */
+  }
+  
+  .ladder-section {
+    height: 100vh; /* Full viewport height */
+    background-color: #f0f0f0;
+  }

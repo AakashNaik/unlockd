@@ -1,33 +1,99 @@
-import { Authenticator, Button, Flex, useTheme } from '@aws-amplify/ui-react';
-import '@aws-amplify/ui-react/styles.css';
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
+import { useState, useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import HomePage from "../components/HomePage";
+import Avatar from "../components/Avatar"; // Create this component
+import { AuthUser, fetchUserAttributes } from "@aws-amplify/auth";
+import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import Typography from "@mui/material/Typography";
+
+// Update the UserDetails interface
+interface UserDetails {
+  name: string;
+  email: string; // Remove the optional '?'
+  picture?: string;
+}
+
 export default function Root() {
+  return (
+    <Authenticator.Provider>
+      <AuthenticatedContent />
+    </Authenticator.Provider>
+  );
+}
 
-    const { tokens } = useTheme();
-    const hideNavbarPaths = ['/exam'];
-    const location = useLocation();
-    return (
-        <>
-        <Authenticator socialProviders={[ 'google']}>
-        {({  }) => (
-            <>
-            {(!hideNavbarPaths.includes(location.pathname)) ?
-                <nav>
-                    <Flex justifyContent="flex-end">
-                        <Button backgroundColor={tokens.colors.blue[40]} ><Link to={'/'} style={{ textDecoration: 'none', color: 'inherit' }}>Home</Link></Button>
+function AuthenticatedContent() {
+  const hideNavbarPaths = ["/exam", "/test", "/myscore"];
+  const location = useLocation();
+  const { user, signOut } = useAuthenticator((context) => [context.user]);
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
+  useEffect(() => {
+    if (user) {
+      const fetchAttributes = async () => {
+        const attributes = await fetchUserAttributes();
+        setUserDetails({
+          name: attributes.name || "User",
+          email: attributes.email || "",
+          picture: attributes.picture
+        });
+      };
+      fetchAttributes();
+    }
+  }, [user]);
 
-                        <Button backgroundColor={tokens.colors.blue[40]} ><Link to={'/test'} style={{ textDecoration: 'none', color: 'inherit' }}>Take Test</Link></Button>
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-                        <Button backgroundColor={tokens.colors.blue[40]}><Link to={'/myscore'} style={{ textDecoration: 'none', color: 'inherit' }}>My Score</Link></Button>
-                    </Flex>
-                </nav> : <></>
-            }
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSignOut = () => {
+    signOut();
+  };
+
+  return (
+    <>
+      <Authenticator socialProviders={["google"]}>
+        {({}) => (
+          <div style={{ position: 'relative' }}>
+            {!hideNavbarPaths.includes(location.pathname) && <HomePage />}
+            <IconButton
+              onClick={handleMenuOpen}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                zIndex: 1000
+              }}
+            >
+              <Avatar 
+                userDetails={userDetails}
+                onSignOut={handleSignOut}
+              />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={handleMenuClose}>
+                <Typography variant="body1">{userDetails?.name}</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleMenuClose}>
+                <Typography variant="body2" color="textSecondary">{userDetails?.email}</Typography>
+              </MenuItem>
+              <MenuItem onClick={signOut}>Sign Out</MenuItem>
+            </Menu>
             <Outlet />
-            </>
+          </div>
         )}
-            </Authenticator>
-
-        </>
-    );
+      </Authenticator>
+    </>
+  );
 }

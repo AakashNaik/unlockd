@@ -1,68 +1,137 @@
-import {
-  Button,
-  Card,
-  Flex,
-  Radio,
-  RadioGroupField,
-  Text,
-} from "@aws-amplify/ui-react";
-import { useRef } from "react";
+import { Box, Typography, Paper, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button, IconButton, Chip } from '@mui/material';
+import { ArrowBack, ArrowForward } from '@mui/icons-material';
+import { useTheme } from '@mui/material/styles';
 import { useTimer } from "react-timer-hook";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import QuestionDrawer from "./QuestionDrawer";
 
+interface Question {
+  id: number;
+  question: string;
+  optiona: string;
+  optionb: string;
+  optionc: string;
+  optiond: string;
+  answer: string;
+}
+
+interface QuestionStatus {
+  id: number;
+  status: 'attempted' | 'notAttempted' | 'underReview';
+}
 
 const client = generateClient<Schema>();
 
 export default function QuestionPage() {
-  const location = useLocation();
-  const questionfilter = location.state;
-  const [question, setQuestions] = useState<Array<Schema["MCQDB"]["type"]>>([]);
-  const [index, setIndex] = useState(0);
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questionStatus, setQuestionStatus] = useState<QuestionStatus[]>([]);
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   const { seconds, minutes, hours } = useTimer({
     expiryTimestamp: getExpiryTimestamp(),
-    onExpire: () => {console.warn("onExpire called");givescore()},
+    onExpire: calculateScore,
   });
-  //const [response, setResponse] = useState<{ response: string, qNo: number }[]>([]);
-  const [value, setValue] = useState("");
-  const [prevbuttonstate, setprevbuttonstate] = useState(false);
-  const [nextbuttonstate, setnextbuttonstate] = useState(false);
-  const navigate = useNavigate();
+
+  const fetchQuestionStatus = async () => {
+    const storedStatus = localStorage.getItem('questionStatus');
+    if (storedStatus) {
+      setQuestionStatus(JSON.parse(storedStatus));
+    } else {
+      try {
+        const response = await fetch('/questions.json');
+        const questionsData = await response.json();
+        const initialStatus = questionsData.map((_: any, index: number) => ({
+          id: index + 1,
+          status: 'notAttempted' as const
+        }));
+        setQuestionStatus(initialStatus);
+        localStorage.setItem('questionStatus', JSON.stringify(initialStatus));
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+      }
+    }
+  };
+
+  const resetExamState = () => {
+    setQuestions([]);
+    setQuestionStatus([]);
+    setSelectedAnswers({});
+    setCurrentIndex(0);
+    localStorage.removeItem('questionStatus');
+    localStorage.removeItem('selectedAnswers');
+  };
+
+  const finishExam = () => {
+    calculateScore();
+    resetExamState();
+    navigate('/'); // Navigate to home or results page
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      let filterMembers = questionfilter.map(
-        (item: { section: string; topic: string }) =>
-          JSON.parse(
-            `{"${"topic"}":{"eq":"${item.section + "|" + item.topic}"}}`
-          )
-      );
-      const { data: items } = await client.models.MCQDB.list({
-        filter: { or: filterMembers },
-      });
-      setQuestions(items);
+    const fetchQuestions = async () => {
+      try {
+        const response = await fetch('/questions.json');
+        const questionsData = await response.json();
+        setQuestions(questionsData);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+      }
     };
 
-    fetchData();
+    fetchQuestions();
+    fetchQuestionStatus();
+
+    // Cleanup function
+    return () => {
+      resetExamState();
+    };
   }, []);
 
-  const responseRef = useRef<Map<string, string>>(new Map());
-
   useEffect(() => {
-    if (index === 0) {
-      setprevbuttonstate(true);
-      setnextbuttonstate(false);
-    } else if (index === question.length - 1) {
-      setprevbuttonstate(false);
-      setnextbuttonstate(true);
-    } else {
-      setprevbuttonstate(false);
-      setnextbuttonstate(false);
+    // Save state to localStorage
+    localStorage.setItem('questionStatus', JSON.stringify(questionStatus));
+    localStorage.setItem('selectedAnswers', JSON.stringify(selectedAnswers));
+  }, [questionStatus, selectedAnswers]);
+
+  const handleAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newAnswer = event.target.value;
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [currentIndex]: newAnswer
+    }));
+    updateQuestionStatus(currentIndex, 'attempted');
+  };
+
+  const handleSubmit = () => {
+    if (!selectedAnswers[currentIndex]) {
+      alert("Please select an answer before submitting.");
+      return;
     }
-  }, [index]);
+    
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      finishExam();
+    }
+  };
+
+  const handleNavigation = (direction: 'prev' | 'next') => {
+    setCurrentIndex(prevIndex => {
+      if (direction === 'prev' && prevIndex > 0) {
+        return prevIndex - 1;
+      } else if (direction === 'next' && prevIndex < questions.length - 1) {
+        return prevIndex + 1;
+      }
+      return prevIndex;
+    });
+  };
 
   function getExpiryTimestamp() {
     const time = new Date();
@@ -70,54 +139,10 @@ export default function QuestionPage() {
     return time;
   }
 
-  function givescore() {
+  function calculateScore() {
     let score = 0;
     let scoreobj = new Map();
-    let index1 = 0;
-    const updateMap = (
-      map: Map<[string, string], number[]>,
-      key: [string, string],
-      valueToAdd: number
-    ) => {
-      if (map.has(key)) {
-        map.set(key, [...(map.get(key) || []), valueToAdd]);
-      } else {
-        map.set(key, [valueToAdd]);
-      }
-    };
-
-
-    question.forEach(() => {
-      if (responseRef.current.has(index1.toString())) {
-        if (
-          responseRef.current.get(index1.toString()) ===
-          "option" + question[index1].answer
-        ) {
-          updateMap(
-            scoreobj,
-            [question[index1].topic || "", question[index1].difficulty || ""],
-            3
-          );
-          score += 3;
-        } else {
-          updateMap(
-            scoreobj,
-            [question[index1].topic || "", question[index1].difficulty || ""],
-            -1
-          );
-
-          score -= 1;
-        }
-      } else {
-        updateMap(
-          scoreobj,
-          [question[index1].topic || "", question[index1].difficulty || ""],
-          0
-        );
-
-        score += 0;
-      }
-    });
+    
 
     alert("your score is: " + score + "!!Thank you for taking test");
     const storescore = async (key: [string, string], value: number[]) => {
@@ -141,79 +166,169 @@ export default function QuestionPage() {
     navigate("/");
   }
 
-  function storeAnswer(value: string, index: number) {
-    //let curresponse = { response: value, qNo: index };
-    console.log("response is ", responseRef.current);
-    let indexstr = index.toString();
-    responseRef.current.set(indexstr, value);
-  }
+  // Function to store the user's answer
+  // Parameters:
+  //   value: The selected answer
+  //   index: The index of the current question
+  //function storeAnswer(value: string, index: number) {
+    // Convert the index to a string
+    //let indexstr = index.toString();
+    // Store the answer in the responseRef Map
+    // The key is the question index (as a string), and the value is the selected answer
+    //responseRef.current.set(indexstr, value);
+  //}
 
-  function handleSubmit() {
-    console.log("value is", value);
-    if (value === "")
-      alert(
-        "Select an response. To go to next question press next. for previous question press Prev"
-      );
-    else {
-      storeAnswer(value, index);
-      if (index < question.length - 1) {
-        setIndex(index + 1);
-        setValue("");
-      } else {
-        alert("Do you want to review or finish the test?");
-        givescore();
-      }
-    }
-  }
-
-  function handlePrevious() {
-    setIndex(index - 1);
-  }
-
-  function handleNext() {
-    setIndex(index + 1);
-  }
+  const handlePrevious = () => handleNavigation('prev');
+  const handleNext = () => handleNavigation('next');
 
   function handleReset() {
-    setValue("");
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [currentIndex]: ''
+    }));
+    updateQuestionStatus(currentIndex, 'notAttempted');
   }
 
+  const handleReview = () => {
+    updateQuestionStatus(currentIndex, 'underReview');
+  };
+
+  const updateQuestionStatus = (index: number, status: 'attempted' | 'notAttempted' | 'underReview') => {
+    const newStatus = [...questionStatus];
+    newStatus[index].status = status;
+    setQuestionStatus(newStatus);
+    localStorage.setItem('questionStatus', JSON.stringify(newStatus));
+  };
+
+  
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
   return (
-    <div>
-      <div>
-        Time: {hours}:{minutes < 10 ? "0" + minutes : minutes}:
-        {seconds < 10 ? "0" + seconds : seconds}
-      </div>
-      
-      <br />
-      {question.length !== 0 && (
-        <Card variation="elevated">
-          <Text>{question[index].question}</Text>
-          <RadioGroupField
-            legend="Option"
-            name="language"
-            variation="outlined"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          >
-            <Radio value="optiona">{question[index].optiona}</Radio>
-            <Radio value="optionb">{question[index].optionb}</Radio>
-            <Radio value="optionc">{question[index].optionc}</Radio>
-            <Radio value="optiond">{question[index].optiond}</Radio>
-          </RadioGroupField>
-        </Card>
+    <Box sx={{ display: 'flex', flexDirection: 'column', padding: '16px' }}>
+      <Button onClick={toggleDrawer}>Open Question List</Button>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <QuestionDrawer 
+          questions={questionStatus} 
+          onQuestionSelect={(index) => {
+            setCurrentIndex(index);
+            setDrawerOpen(false);
+          }}
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+        />
+        <Typography variant="h4" sx={{ flex: 1, textAlign: 'center', fontWeight: 'bold' }}>
+          Time Left: {hours}:{minutes < 10 ? "0" + minutes : minutes}:
+          {seconds < 10 ? "0" + seconds : seconds}
+        </Typography>
+        
+      </Box>
+
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+        {questionStatus[currentIndex]?.status === 'notAttempted' && (
+          <Chip label="Not Attempted" variant="outlined" sx={{ backgroundColor: '#F9DEDC' }} />
+        )}
+        {questionStatus[currentIndex]?.status === 'attempted' && (
+          <Chip label="Attempted" variant="outlined" sx={{ backgroundColor: '#CDEDA3' }} />
+        )}
+        {questionStatus[currentIndex]?.status === 'underReview' && (
+          <Chip label="Review" variant="outlined" sx={{ backgroundColor: '#F8E287' }} />
+        )}
+      </Box>
+
+      {questions.length > 0 ? (
+        <Paper elevation={3} sx={{ p: 3, mb: 3, backgroundColor: '#EDEDF4', minHeight: '500px', display: 'flex', flexDirection: 'column' }}>
+          <Typography variant="body1" sx={{ mb: 3, fontSize: '18px', flex: 1 }}>
+            Q. {questions[currentIndex].question}
+          </Typography>
+
+          <FormControl component="fieldset">
+            <FormLabel component="legend" sx={{ mb: 2, fontSize: '18px' }}>Options</FormLabel>
+            <RadioGroup 
+              aria-label="quiz" 
+              name="quiz" 
+              value={selectedAnswers[currentIndex] || ''}
+              onChange={handleAnswerChange}
+            >
+              <FormControlLabel value="optiona" control={<Radio />} label={questions[currentIndex].optiona} sx={{ mb: 1 }} />
+              <FormControlLabel value="optionb" control={<Radio />} label={questions[currentIndex].optionb} sx={{ mb: 1 }} />
+              <FormControlLabel value="optionc" control={<Radio />} label={questions[currentIndex].optionc} sx={{ mb: 1 }} />
+              <FormControlLabel value="optiond" control={<Radio />} label={questions[currentIndex].optiond} sx={{ mb: 1 }} />
+            </RadioGroup>
+          </FormControl>
+        </Paper>
+      ) : (
+        <Typography>Loading questions...</Typography>
       )}
-      <br />
-      <Flex>
-        <Button onClick={handlePrevious} isDisabled={prevbuttonstate}>
-          Previous
-        </Button>
-        <Button onClick={handleNext} isDisabled={nextbuttonstate}>
-          Next
-        </Button>
-        <Button onClick={handleSubmit}>Submit</Button>
-        <Button onClick={handleReset}>Reset</Button>
-      </Flex>
-    </div>
+
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '48px', paddingRight: '32px' }}>
+        <Box>
+          <IconButton 
+            sx={{ mr: 1, bacskgroundColor: theme.palette.grey[200] }} 
+            onClick={handlePrevious}
+            disabled={currentIndex === 0}
+          >
+            <ArrowBack />
+          </IconButton>
+          <IconButton 
+            sx={{ backgroundColor: theme.palette.grey[200] }} 
+            onClick={handleNext}
+            disabled={currentIndex === questions.length - 1}
+          >
+            <ArrowForward />
+          </IconButton>
+        </Box>
+        <Box>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={handleSubmit}
+            sx={{
+              mr: 2,
+              borderRadius: '50px',
+              backgroundColor: '#82A8EC',
+              color: '#001C40',
+              '&:hover': {
+                backgroundColor: '#6B8ED4',
+              },
+            }}
+          >
+            Submit
+          </Button>
+          <Button
+            variant="outlined"
+            size="large"
+            onClick={handleReset}
+            sx={{
+              borderRadius: '50px',
+              borderColor: '#737781',
+              color: '#001C40',
+              '&:hover': {
+                backgroundColor: '#F0F0F0',
+              },
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            variant="outlined"
+            size="large"
+            onClick={handleReview}
+            sx={{
+              borderRadius: '50px',
+              borderColor: '#737781',
+              color: '#001C40',
+              '&:hover': {
+                backgroundColor: '#F0F0F0',
+              },
+              ml: 2,
+            }}
+          >
+            Review
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
 }

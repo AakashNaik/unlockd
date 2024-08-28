@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "question": "What is the capital of France?",
+    "optiona": "Paris",
+    "optionb": "Berlin",
+    "optionc": "Madrid",
+    "optiond": "Rome",
+    "answer": "Paris"
+  },
+  {
+    "id": 2,
+    "question": "Which planet is known as the Red Planet?",
+    "optiona": "Earth",
+    "optionb": "Mars",
+    "optionc": "Jupiter",
+    "optiond": "Venus",
+    "answer": "Mars"
+  },
+  {
+    "id": 3,
+    "question": "What is the largest mammal?",
+    "optiona": "Elephant",
+    "optionb": "Blue Whale",
+    "optionc": "Giraffe",
+    "optiond": "Rhino",
+    "answer": "Blue Whale"
+  },
+  {
+    "id": 4,
+    "question": "Which element has the chemical symbol 'O'?",
+    "optiona": "Gold",
+    "optionb": "Oxygen",
+    "optionc": "Iron",
+    "optiond": "Silver",
+    "answer": "Oxygen"
+  },
+  {
+    "id": 5,
+    "question": "What is the square root of 64?",
+    "optiona": "6",
+    "optionb": "7",
+    "optionc": "8",
+    "optiond": "9",
+    "answer": "8"
+  },
+  {
+    "id": 6,
+    "question": "Who painted the Mona Lisa?",
+    "optiona": "Vincent van Gogh",
+    "optionb": "Leonardo da Vinci",
+    "optionc": "Pablo Picasso",
+    "optiond": "Michelangelo",
+    "answer": "Leonardo da Vinci"
+  },
+  {
+    "id": 7,
+    "question": "What is the largest ocean on Earth?",
+    "optiona": "Atlantic Ocean",
+    "optionb": "Indian Ocean",
+    "optionc": "Arctic Ocean",
+    "optiond": "Pacific Ocean",
+    "answer": "Pacific Ocean"
+  },
+  {
+    "id": 8,
+    "question": "Which country is home to the kangaroo?",
+    "optiona": "New Zealand",
+    "optionb": "South Africa",
+    "optionc": "Australia",
+    "optiond": "Brazil",
+    "answer": "Australia"
+  },
+  {
+    "id": 9,
+    "question": "What is the capital of Japan?",
+    "optiona": "Seoul",
+    "optionb": "Beijing",
+    "optionc": "Tokyo",
+    "optiond": "Bangkok",
+    "answer": "Tokyo"
+  },
+  {
+    "id": 10,
+    "question": "Who wrote 'Romeo and Juliet'?",
+    "optiona": "Charles Dickens",
+    "optionb": "William Shakespeare",
+    "optionc": "Jane Austen",
+    "optiond": "Mark Twain",
+    "answer": "William Shakespeare"
+  }
+]

@@ -1,0 +1,53 @@
+[
+    {
+      "question": "What is the capital of France?",
+      "optiona": "Paris",
+      "optionb": "Berlin",
+      "optionc": "Madrid",
+      "optiond": "Rome",
+      "topic": "Geography",
+      "answer": "Paris",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Which planet is known as the Red Planet?",
+      "optiona": "Earth",
+      "optionb": "Mars",
+      "optionc": "Jupiter",
+      "optiond": "Venus",
+      "topic": "Astronomy",
+      "answer": "Mars",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the largest mammal?",
+      "optiona": "Elephant",
+      "optionb": "Blue Whale",
+      "optionc": "Giraffe",
+      "optiond": "Rhino",
+      "topic": "Biology",
+      "answer": "Blue Whale",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Which element has the chemical symbol 'O'?",
+      "optiona": "Gold",
+      "optionb": "Oxygen",
+      "optionc": "Iron",
+      "optiond": "Silver",
+      "topic": "Chemistry",
+      "answer": "Oxygen",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the square root of 64?",
+      "optiona": "6",
+      "optionb": "7",
+      "optionc": "8",
+      "optiond": "9",
+      "topic": "Mathematics",
+      "answer": "8",
+      "difficulty": "easy"
+    }
+  ]
+  
