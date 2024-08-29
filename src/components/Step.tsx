@@ -1,7 +1,7 @@
-import React from 'react';
+
 import { Canvas } from '@react-three/fiber';
 import { Text, OrbitControls } from '@react-three/drei';
-import * as THREE from 'three';
+
 
 interface StepProps {
   position: [number, number, number];
