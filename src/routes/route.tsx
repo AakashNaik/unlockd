@@ -5,9 +5,6 @@ import HomePage from "../components/HomePage";
 import Avatar from "../components/Avatar"; // Create this component
 import {  fetchUserAttributes } from "@aws-amplify/auth";
 import IconButton from "@mui/material/IconButton";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import Typography from "@mui/material/Typography";
 
 // Update the UserDetails interface
 interface UserDetails {
@@ -29,7 +26,7 @@ function AuthenticatedContent() {
   const location = useLocation();
   const { user, signOut } = useAuthenticator((context) => [context.user]);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [_, setAnchorEl] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -49,9 +46,9 @@ function AuthenticatedContent() {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+ {/* const handleMenuClose = () => {
     setAnchorEl(null);
-  };
+  };*/}
 
   const handleSignOut = () => {
     signOut();

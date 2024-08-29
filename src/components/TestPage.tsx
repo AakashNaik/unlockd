@@ -2,7 +2,7 @@ import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import '@aws-amplify/ui-react/styles.css';
 import { useState, useEffect } from "react";
-import { TableComponent } from "./TableComponent";
+//import { TableComponent } from "./TableComponent";
 
 import { useNavigate } from 'react-router-dom';
 const client = generateClient<Schema>();
@@ -17,10 +17,10 @@ export function TestPage() {
     const navigate = useNavigate();
 
     const [tests, setTests] = useState<Array<Schema["TOPICDB"]["type"]>>([]);
-    const [selection, setSelection] = useState<{id:string , section: string, topic: string }[]>([]);
-    const navigateToNewPath = () => {
+    //const [selection, setSelection] = useState<{id:string , section: string, topic: string }[]>([]);
+    {/*const navigateToNewPath = () => {
         navigate('/exam', {state: selection});
-    };
+    };*/}
 
     useEffect(() => {
         client.models.TOPICDB.observeQuery().subscribe({
@@ -44,9 +44,9 @@ export function TestPage() {
         }, 1000);
     };
 
-    function handleData(id:String){
+    /*function handleData(id:String){
         setSelection(section => section.filter(item=> item.id!==id));
-    }
+    }*/
 
     return (
         <Container maxWidth="sm">
