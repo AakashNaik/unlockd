@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import HomePage from "../components/HomePage";
 import Avatar from "../components/Avatar"; // Create this component
-import { AuthUser, fetchUserAttributes } from "@aws-amplify/auth";
+import {  fetchUserAttributes } from "@aws-amplify/auth";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";

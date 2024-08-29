@@ -1,15 +1,15 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Box, Sphere, Cylinder } from '@react-three/drei'
+import { Box, Sphere, Cylinder, OrbitControls } from '@react-three/drei'
 
 function Woman({ position }: { position: [number, number, number] }) {
-  const ref = useRef<THREE.Mesh>(null!)
+  const ref = useRef<THREE.Group>(null!)
   useFrame((state) => {
     const t = state.clock.getElapsedTime()
     ref.current.position.y = position[1] + Math.sin(t * 2) * 0.1
   })
   return (
-    <group position={position}>
+    <group ref={ref} position={position}>
       <Sphere args={[0.5, 32, 32]} position={[0, 1.6, 0]}>
         <meshStandardMaterial color="peachpuff" />
       </Sphere>
@@ -36,7 +36,7 @@ function Medal({ position }: { position: [number, number, number] }) {
 
 export default function SuccessAnimation() {
   return (
-    <Canvas style={{ height: '400px' }}>
+    <Canvas style={{ height: '400px' }} camera={{ position: [0, 0, 5] }}>
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} />
       <Woman position={[-1, 0, 0]} />
@@ -44,6 +44,7 @@ export default function SuccessAnimation() {
       <Box args={[5, 0.1, 5]} position={[0, -1, 0]}>
         <meshStandardMaterial color="limegreen" />
       </Box>
+      <OrbitControls />
     </Canvas>
   )
 }

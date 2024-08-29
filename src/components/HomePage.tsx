@@ -8,10 +8,10 @@ import { Speedometer } from "./Speedometer";
 import Cube from "./RotatingBox";
 import GlassLightComponent from "./GlassLight";
 import '../HomePage.css';
-import Ladder from './Step';
+//import Ladder from './Step';
 import stairs from "/stairs.svg";
 import customStairsSvg from "/Section 7.svg";
-import SuccessAnimation from './SuccessAnimation';
+//import SuccessAnimation from './SuccessAnimation';
 
 const HomePage: React.FC = () => {
   return (
@@ -112,9 +112,9 @@ const HomePage: React.FC = () => {
           }}
         />
       </div>
-      <div style={{ height: '400px', width: '100%' }}>
+      {/*<div style={{ height: '400px', width: '100%' }}>
         <SuccessAnimation />
-      </div>
+      </div>*/}
     </div>
   );
 };
