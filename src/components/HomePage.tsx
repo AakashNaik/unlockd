@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Flex } from "@aws-amplify/ui-react";
-import backgroundImage from "../assets/home_image.jpg";
+//import backgroundImage from "../assets/home_image.jpg";
 import mountain from "../assets/mountain.png";
 import GlassmorphismComponent from "./Glass";
 import { Speedometer } from "./Speedometer";
@@ -12,27 +12,38 @@ import '../HomePage.css';
 import stairs from "/stairs.svg";
 import customStairsSvg from "/Section 7.svg";
 //import SuccessAnimation from './SuccessAnimation';
+import EqualIcon from '@mui/icons-material/DragHandle';
+import AddIcon from '@mui/icons-material/Add';
 
 const HomePage: React.FC = () => {
   return (
     <div className="home-container">
-      <div className="hero-section" style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <div className="hero-section" style={{ }}>
         <Flex className="nav-container">
           <nav>
             <Flex justifyContent="flex-end">
-              <Button className="nav-button">
-                <Link to={"/"} className="nav-link nav-link-black">Home</Link>
+              <Button 
+                className="nav-button-transparent" 
+                style={{ background: 'none', border: 'none', boxShadow: 'none' }}
+              >
+                <Link to={"/"} className="nav-link" style={{ color: 'black' }}>Home</Link>
               </Button>
-              <Button className="nav-button-black">
-                <Link to={"/test"} className="nav-link nav-link-white">Take Test</Link>
+              <Button 
+                className="nav-button-black" 
+                style={{ backgroundColor: 'black', border: '1px solid black', boxShadow: 'none' }}
+              >
+                <Link to={"/test"} className="nav-link" style={{ color: 'white' }}>Take Test</Link>
               </Button>
-              <Button className="nav-button-transparent">
-                <Link to={"/myscore"} className="nav-link">My Score</Link>
+              <Button 
+                className="nav-button-transparent" 
+                style={{ background: 'none', boxShadow: 'none' }}
+              >
+                <Link to={"/myscore"} className="nav-link" style={{ color: 'black' }}>My Score</Link>
               </Button>
             </Flex>
           </nav>
         </Flex>
-        <Flex direction='column' justifyContent='center' className="hero-content">
+        <Flex direction='column' justifyContent='center' className="hero-content" margin={120}>
           <h1 className='main-page-heading' style={{ 
             fontWeight: 'bold', 
             fontSize: '2.5rem', 
@@ -54,10 +65,26 @@ const HomePage: React.FC = () => {
         </Flex>
       </div>
       <div className="cube-section">
-        <Cube text="Score"/>
-        <Cube text="Studying"/>
-        <Cube text="Planning"/>
-        
+        <Flex alignItems="center" justifyContent="center" style={{ gap: '20px' }}>
+          <Cube text="Score" customStyle={{ width: '400px', height: '400px' }}/>
+          <EqualIcon 
+            sx={{ 
+              fontSize: 40, 
+              fontWeight: 'bold', 
+              color: '#ffffff', // Adjust color as needed
+            }} 
+          />
+          <Cube text="Studying"  customStyle={{ width: '400px', height: '400px' }}/>
+          <AddIcon 
+            sx={{ 
+              fontSize: 40, 
+              fontWeight: 'bold', 
+              
+              color: '#ffffff', // Adjust color as needed
+            }} 
+          />
+          <Cube text="Planning"  customStyle={{ width: '400px', height: '400px' }}/>
+        </Flex>
       </div>
       <div className="mountain-section" style={{ backgroundImage: `url(${mountain})` }}>
         <div className="mountain-overlay"></div>
@@ -107,8 +134,8 @@ const HomePage: React.FC = () => {
             maxWidth: '100%', 
             maxHeight: '100%', 
             objectFit: 'contain',
-            border: '1px solid red', // Add this to see the image boundaries
-            background: '#f0f0f0'    // Add this to see the image area
+             // Add this to see the image boundaries
+                // Add this to see the image area
           }}
         />
       </div>

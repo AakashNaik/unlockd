@@ -17,21 +17,19 @@
     padding: 10px;
   }
   
-  .nav-button {
-    background-color: transparent;
-    border-radius: 100px;
-    width: 100px;
+  .nav-button-transparent {
+    background: none;
+    border: none;
   }
   
   .nav-button-black {
-    background-color: #000000;
-    border-radius: 100px;
-    width: 125px;
+    background-color: white;
+    border: 1px solid black;
   }
   
-  .nav-button-transparent {
-    background-color: transparent;
-    border: none;
+  .nav-button {
+    background-color: black;
+    border: 1px solid black;
   }
   
   .nav-link {
@@ -62,7 +60,7 @@
     display: flex;
     flex-direction: row;
     background-color: #000000;
-    height: 50vh; /* This is the current height */
+    height: 100vh; /* This is the current height */
     
     align-items: center;
   }

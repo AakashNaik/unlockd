@@ -103,3 +103,21 @@ body {
     inset 0 0 0 1px rgba(255, 255, 255, 0.6);
 }
 
+.nav-button-transparent {
+  background: none;
+  border: none;
+}
+
+.nav-button-black {
+  background-color: white;
+  border: 1px solid black;
+}
+
+.nav-link {
+  text-decoration: none;
+}
+
+.nav-link-black {
+  color: black;
+}
+

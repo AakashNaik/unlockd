@@ -67,7 +67,7 @@ function AuthenticatedContent() {
               onClick={handleMenuOpen}
               style={{
                 position: 'absolute',
-                top: '10px',
+                top: '0px',
                 right: '10px',
                 zIndex: 1000
               }}
@@ -77,19 +77,7 @@ function AuthenticatedContent() {
                 onSignOut={handleSignOut}
               />
             </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-            >
-              <MenuItem onClick={handleMenuClose}>
-                <Typography variant="body1">{userDetails?.name}</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleMenuClose}>
-                <Typography variant="body2" color="textSecondary">{userDetails?.email}</Typography>
-              </MenuItem>
-              <MenuItem onClick={signOut}>Sign Out</MenuItem>
-            </Menu>
+         
             <Outlet />
           </div>
         )}

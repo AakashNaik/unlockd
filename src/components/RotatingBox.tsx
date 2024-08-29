@@ -10,6 +10,7 @@ interface CubeProps {
 
 interface MainProps {
   text: string;
+  customStyle?: React.CSSProperties;
 }
 
 function Box({ position, text }: CubeProps) {
@@ -48,15 +49,30 @@ function Box({ position, text }: CubeProps) {
   );
 }
 
-export default function Cube({ text }: MainProps) {
-  return (
-    <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
-      <ambientLight intensity={2} /> {/* Increased intensity */}
-      <directionalLight position={[0, 0, 0]} intensity={4} /> {/* Added front light */}
-      <Box position={[0, 0, 0]} text={text} />
-      <OrbitControls enableZoom={false} enablePan={true} />
-    </Canvas>
-  );
+interface MainProps {
+  text: string;
+  customStyle?: React.CSSProperties;
 }
+
+const Cube: React.FC<MainProps> = ({ text, customStyle }) => {
+  return (
+    <div style={{ ...defaultStyle, ...customStyle }}>
+      <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
+        <ambientLight intensity={8} /> {/* Increased intensity */}
+        <directionalLight position={[0, 0, -2]} intensity={15} /> {/* Added front light */}
+        <Box position={[0, 0, 0]} text={text} />
+        <OrbitControls enableZoom={false} enablePan={true} />
+      </Canvas>
+    </div>
+  );
+};
+
+const defaultStyle: React.CSSProperties = {
+  width: '100px',
+  height: '100px',
+  // ... other default styles
+};
+
+export default Cube;
 
 
