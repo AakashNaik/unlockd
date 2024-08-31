@@ -69,7 +69,7 @@ export function TestPage() {
                                 onChange={(e) => setSection(e.target.value)}
                                 placeholder="Choose Section..."
                             >
-                                {tests.map((test) => test.type ?? "Section").map((option) => (
+                                {tests.map((test) => test.Section ?? "Section").map((option) => (
                                     <MenuItem key={option} value={option}>{option}</MenuItem>
                                 ))}
                             </Select>
@@ -82,7 +82,7 @@ export function TestPage() {
                                 onChange={(e) => setTopic(e.target.value)}
                                 placeholder="Choose Topic..."
                             >
-                                {tests.filter((test) => test.type === section).map((test) => test.topic ?? 'error topic').map((option) => (
+                                {tests.filter((test) => test.Section === section).map((test) => test.Topic ?? 'error topic').map((option) => (
                                     <MenuItem key={option} value={option}>{option}</MenuItem>
                                 ))}
                             </Select>

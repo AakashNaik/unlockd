@@ -148,10 +148,9 @@ export default function QuestionPage() {
     const storescore = async (key: [string, string], value: number[]) => {
       await client.models.SCOREDB.create(
         {
-          score: value.reduce((acc, cur) => acc + cur, 0).toString(),
-          topic: key[0],
-          difficulty: key[1],
-          qNo: value.length.toString(),
+          Score: value.reduce((acc, cur) => acc + cur, 0),
+          TopicID: key[0],
+          Date: value.length.toString(),
         },
         {
           authMode: "userPool",

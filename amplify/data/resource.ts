@@ -9,30 +9,50 @@ specifies that any user authenticated via an API key can "create", "read",
 const schema = a.schema({
 
   MCQDB: a.model({
-    question: a.string(),
-    optiona: a.string(),
-    optionb: a.string(),
-    optionc: a.string(),
-    optiond: a.string(),
-    answer: a.string(),
-    topic: a.string(),
-    difficulty: a.string(),
-    explanation: a.string(),
+    Question: a.string(),
+    OptionA: a.string(),
+    OptionB: a.string(),
+    OptionC: a.string(),
+    OptionD: a.string(),
+    Answer: a.string(),
+    Explanation: a.string(),
+    TopicID: a.string(),
+    DifficultyLevel: a.string(),
   }).authorization(allow => [allow.publicApiKey()]),
 
   SCOREDB: a.model({
-    
-    score: a.string(),
-    topic: a.string(),
-    difficulty: a.string(),
-    qNo: a.string(),
-    owner: a.string().authorization(allow => [allow.owner().to(['read', 'delete'])]),
-  }).authorization(allow => [allow.owner().to(['create', 'read', 'update'])]),
+    Testtype: a.string(),
+    Date: a.datetime(),
+    Score: a.float(),
+    UserId: a.string(),
+    TopicID: a.string(),
+    TestID: a.string(),
+  }).authorization(allow => [allow.owner().to(['create', 'read', 'update', 'delete'])]),
     
   TOPICDB: a.model({
-    type: a.string(),
-    topic: a.string(),
-  }).authorization(allow => [allow.publicApiKey()])
+    TopicID: a.string(),
+    Topic: a.string(),
+    Section: a.string(),
+    Key: a.string(),
+  }).authorization(allow => [allow.publicApiKey()]),
+
+  TESTDB: a.model({
+    TestID: a.string(),
+    UserId: a.string(),
+    Easy: a.float(),
+    Medium: a.float(),
+    Difficult: a.float(),
+    Timetaken: a.float(),
+    TopicID: a.string(),
+    // ... other fields ...
+  }).authorization(allow => [allow.owner().to(['create', 'read', 'update', 'delete'])]),
+
+  TESTQUESTIONDB: a.model({
+    ID: a.string(),
+    TestID: a.string(),
+    QuestionID: a.string(),
+    UserID: a.string(),
+  }).authorization(allow => [allow.owner().to(['create', 'read', 'update', 'delete'])]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
@@ -41,7 +61,6 @@ export const data = defineData({
   schema,
   authorizationModes: {
     defaultAuthorizationMode: "apiKey",
-    // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
       expiresInDays: 30,
     },
