@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/filter": {
+      "name": "/filter",
+      "lambdaFunction": "filterQuestionsForTest",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

@@ -5,17 +5,20 @@ import { useTimer } from "react-timer-hook";
 import { useState, useEffect } from "react";
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import QuestionDrawer from "./QuestionDrawer";
+import { fetchAuthSession } from 'aws-amplify/auth';
+//import JWTtoken from "./JWTToken";
+
 
 interface Question {
   id: number;
-  question: string;
-  optiona: string;
-  optionb: string;
-  optionc: string;
-  optiond: string;
-  answer: string;
+  Question: string;
+  OptionA: string;
+  OptionB: string;
+  OptionC: string;
+  OptionD: string;
+  Answer: string;
 }
 
 interface QuestionStatus {
@@ -26,6 +29,8 @@ interface QuestionStatus {
 const client = generateClient<Schema>();
 
 export default function QuestionPage() {
+  const location = useLocation();
+  const { testType, topicId } = location.state as { testType: string; topicId?: string };
   const theme = useTheme();
   const navigate = useNavigate();
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -39,25 +44,19 @@ export default function QuestionPage() {
     onExpire: calculateScore,
   });
 
-  const fetchQuestionStatus = async () => {
+  /*const fetchQuestionStatus = async () => {
     const storedStatus = localStorage.getItem('questionStatus');
     if (storedStatus) {
       setQuestionStatus(JSON.parse(storedStatus));
     } else {
-      try {
-        const response = await fetch('/questions.json');
-        const questionsData = await response.json();
-        const initialStatus = questionsData.map((_: any, index: number) => ({
-          id: index + 1,
-          status: 'notAttempted' as const
-        }));
-        setQuestionStatus(initialStatus);
-        localStorage.setItem('questionStatus', JSON.stringify(initialStatus));
-      } catch (error) {
-        console.error('Error fetching questions:', error);
-      }
+      const initialStatus = questions.map((_, index) => ({
+        id: index + 1,
+        status: 'notAttempted' as const
+      }));
+      setQuestionStatus(initialStatus);
+      localStorage.setItem('questionStatus', JSON.stringify(initialStatus));
     }
-  };
+  };*/
 
   const resetExamState = () => {
     setQuestions([]);
@@ -75,24 +74,60 @@ export default function QuestionPage() {
   };
 
   useEffect(() => {
+    let isMounted = true;
     const fetchQuestions = async () => {
       try {
-        const response = await fetch('/questions.json');
-        const questionsData = await response.json();
-        setQuestions(questionsData);
+        let url = 'https://5lss8y7az9.execute-api.ap-south-1.amazonaws.com/dev/filter';
+      
+        // Add query parameters
+        const params = new URLSearchParams({ Testtype: testType });
+        if (testType === 'Single' && topicId) {
+          params.append('TopicID', topicId);
+        }
+      
+        url += `?${params.toString()}`;
+        const session = await fetchAuthSession();
+        const idToken = session.tokens?.idToken?.toString();
+        
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+            // Add other headers if required
+          }
+        });
+
+        if (response.ok && isMounted) {
+          const result = await response.json();
+          console.log(result);
+          setQuestions(result);
+          
+          // Set default status for all questions
+          const initialStatus = result.map((_: any, index: number) => ({
+            id: index + 1,
+            status: 'notAttempted' as const
+          }));
+          setQuestionStatus(initialStatus);
+          localStorage.setItem('questionStatus', JSON.stringify(initialStatus));
+        } else if (isMounted) {
+          console.error('Error fetching data:', response.statusText);
+        }
       } catch (error) {
-        console.error('Error fetching questions:', error);
+        if (isMounted) {
+          console.error('Error fetching data:', error);
+        }
       }
     };
 
     fetchQuestions();
-    fetchQuestionStatus();
 
     // Cleanup function
     return () => {
+      isMounted = false;
       resetExamState();
     };
-  }, []);
+  }, [testType, topicId]);
 
   useEffect(() => {
     // Save state to localStorage
@@ -165,17 +200,7 @@ export default function QuestionPage() {
     navigate("/");
   }
 
-  // Function to store the user's answer
-  // Parameters:
-  //   value: The selected answer
-  //   index: The index of the current question
-  //function storeAnswer(value: string, index: number) {
-    // Convert the index to a string
-    //let indexstr = index.toString();
-    // Store the answer in the responseRef Map
-    // The key is the question index (as a string), and the value is the selected answer
-    //responseRef.current.set(indexstr, value);
-  //}
+  
 
   const handlePrevious = () => handleNavigation('prev');
   const handleNext = () => handleNavigation('next');
@@ -193,10 +218,15 @@ export default function QuestionPage() {
   };
 
   const updateQuestionStatus = (index: number, status: 'attempted' | 'notAttempted' | 'underReview') => {
-    const newStatus = [...questionStatus];
-    newStatus[index].status = status;
-    setQuestionStatus(newStatus);
-    localStorage.setItem('questionStatus', JSON.stringify(newStatus));
+    setQuestionStatus(prevStatus => {
+      const newStatus = [...prevStatus];
+      if (!newStatus[index]) {
+        newStatus[index] = { id: index + 1, status: 'notAttempted' };
+      }
+      newStatus[index].status = status;
+      localStorage.setItem('questionStatus', JSON.stringify(newStatus));
+      return newStatus;
+    });
   };
 
   
@@ -239,7 +269,7 @@ export default function QuestionPage() {
       {questions.length > 0 ? (
         <Paper elevation={3} sx={{ p: 3, mb: 3, backgroundColor: '#EDEDF4', minHeight: '500px', display: 'flex', flexDirection: 'column' }}>
           <Typography variant="body1" sx={{ mb: 3, fontSize: '18px', flex: 1 }}>
-            Q. {questions[currentIndex].question}
+            Q. {questions[currentIndex].Question}
           </Typography>
 
           <FormControl component="fieldset">
@@ -250,10 +280,10 @@ export default function QuestionPage() {
               value={selectedAnswers[currentIndex] || ''}
               onChange={handleAnswerChange}
             >
-              <FormControlLabel value="optiona" control={<Radio />} label={questions[currentIndex].optiona} sx={{ mb: 1 }} />
-              <FormControlLabel value="optionb" control={<Radio />} label={questions[currentIndex].optionb} sx={{ mb: 1 }} />
-              <FormControlLabel value="optionc" control={<Radio />} label={questions[currentIndex].optionc} sx={{ mb: 1 }} />
-              <FormControlLabel value="optiond" control={<Radio />} label={questions[currentIndex].optiond} sx={{ mb: 1 }} />
+              <FormControlLabel value="optiona" control={<Radio />} label={questions[currentIndex].OptionA} sx={{ mb: 1 }} />
+              <FormControlLabel value="optionb" control={<Radio />} label={questions[currentIndex].OptionB} sx={{ mb: 1 }} />
+              <FormControlLabel value="optionc" control={<Radio />} label={questions[currentIndex].OptionC} sx={{ mb: 1 }} />
+              <FormControlLabel value="optiond" control={<Radio />} label={questions[currentIndex].OptionD} sx={{ mb: 1 }} />
             </RadioGroup>
           </FormControl>
         </Paper>
@@ -327,7 +357,8 @@ export default function QuestionPage() {
             Review
           </Button>
         </Box>
-      </Box>
+        </Box>
+        
     </Box>
   );
 }

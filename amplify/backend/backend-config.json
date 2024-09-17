@@ -1,0 +1,51 @@
+{
+  "api": {
+    "filterQuestionsForTestApi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "filterQuestionsForTest"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "function": {
+    "filterQuestionsForTest": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_filterQuestionsForTest_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "filterQuestionsForTest"
+        }
+      ]
+    },
+    "AMPLIFY_function_filterQuestionsForTest_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "filterQuestionsForTest"
+        }
+      ]
+    },
+    "AMPLIFY_function_filterQuestionsForTest_storageMcqdbtableName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "filterQuestionsForTest"
+        }
+      ]
+    }
+  }
+}

@@ -12,7 +12,7 @@ import Root from "./routes/route";
 
 import { ErrorPage } from "./components/ErrorPage.tsx";
 import { ScorePage } from "./components/ScorePage.tsx";
-import { TestPage } from "./components/TestPage.tsx";
+import TestPage from './components/TestPage';
 import QuestionPage from "./components/QuestionPage.tsx";
 
 const router = createBrowserRouter([

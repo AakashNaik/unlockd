@@ -1,0 +1,27 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-unlockd-dev-b1aac-authRole",
+      "UnauthRoleArn": "arn:aws:iam::992382594473:role/amplify-unlockd-dev-b1aac-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::992382594473:role/amplify-unlockd-dev-b1aac-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-unlockd-dev-b1aac-deployment",
+      "UnauthRoleName": "amplify-unlockd-dev-b1aac-unauthRole",
+      "StackName": "amplify-unlockd-dev-b1aac",
+      "StackId": "arn:aws:cloudformation:ap-south-1:992382594473:stack/amplify-unlockd-dev-b1aac/5f5f1a30-68a7-11ef-a128-06c918dad631",
+      "AmplifyAppId": "d2fv3q53kmytdw"
+    },
+    "categories": {
+      "function": {
+        "filterQuestionsForTest": {
+          "deploymentBucketName": "amplify-unlockd-dev-b1aac-deployment",
+          "s3Key": "amplify-builds/filterQuestionsForTest-582f4b752b6e4247456f-build.zip",
+          "storageMcqdbtableName": "MCQDB-dijwojgwivh3fgwkvsdizoy45i-NONE"
+        }
+      },
+      "api": {
+        "filterQuestionsForTestApi": {}
+      }
+    }
+  }
+}

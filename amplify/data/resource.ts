@@ -1,4 +1,4 @@
-import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { type ClientSchema, a, defineData, defineFunction } from "@aws-amplify/backend";
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -6,6 +6,11 @@ adding a new "isDone" field as a boolean. The authorization rule below
 specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
+
+const filteredQuestionsHandler = defineFunction({
+  entry: './filterQuestionsTest/handler.ts'
+})
+
 const schema = a.schema({
 
   MCQDB: a.model({
@@ -53,6 +58,31 @@ const schema = a.schema({
     QuestionID: a.string(),
     UserID: a.string(),
   }).authorization(allow => [allow.owner().to(['create', 'read', 'update', 'delete'])]),
+
+  // Update the FilteredQuestionsResponse definition
+  FilteredQuestionsResponse: a.model({
+    
+        Question: a.string().array(),
+        OptionA: a.string().array(),
+        OptionB: a.string().array(),
+        OptionC: a.string().array(),
+        OptionD: a.string().array(),
+        Answer: a.string().array(),
+        Explanation: a.string().array(),
+        TopicID: a.string().array(),
+        DifficultyLevel: a.string().array(),
+      }).authorization(allow => [allow.publicApiKey()]),
+
+  // Define your query with the return type and arguments
+  filterQuestions: a
+    .query()
+    .arguments({
+      testType: a.string(),
+      topicId: a.string()
+    })
+    .returns(a.ref('FilteredQuestionsResponse'))
+    .authorization(allow => [allow.authenticated()])
+    .handler(a.handler.function(filteredQuestionsHandler)),
 });
 
 export type Schema = ClientSchema<typeof schema>;

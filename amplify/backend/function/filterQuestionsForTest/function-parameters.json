@@ -1,0 +1,9 @@
+{
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "storageMcqdbtableName",
+      "environmentVariableName": "STORAGE_MCQDBTABLE_NAME"
+    }
+  ]
+}
