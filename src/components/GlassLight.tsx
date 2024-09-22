@@ -27,7 +27,6 @@ const GlassLightComponent: React.FC<GlassLightComponentProps> = ({
       }}
     >
       <h3 style={{ color: '#000000', marginBottom: '10px' }}>{text}</h3>
-      <p style={{ color: '#000000', fontSize: '14px' }}>This is a glass card effect</p>
       <div 
         style={{
           position: 'absolute',

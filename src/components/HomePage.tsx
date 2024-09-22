@@ -1,4 +1,4 @@
-import React from 'react';
+import  { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Flex } from "@aws-amplify/ui-react";
 //import backgroundImage from "../assets/home_image.jpg";
@@ -14,8 +14,23 @@ import customStairsSvg from "/Section 7.svg";
 //import SuccessAnimation from './SuccessAnimation';
 import EqualIcon from '@mui/icons-material/DragHandle';
 import AddIcon from '@mui/icons-material/Add';
+import styles from '../HomePage.module.css';  // Add this import
 
-const HomePage: React.FC = () => {
+export function HomePage() {
+  const [highlightedCard, setHighlightedCard] = useState<string | null>(null);
+
+  useEffect(() => {
+    const sequence = ['personalized', 'adaptive', 'learning'];
+    let currentIndex = 0;
+
+    const intervalId = setInterval(() => {
+      setHighlightedCard(sequence[currentIndex]);
+      currentIndex = (currentIndex + 1) % sequence.length;
+    }, 1800); // 1.8 seconds
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <div className="home-container">
       <div className="hero-section" style={{ }}>
@@ -50,7 +65,7 @@ const HomePage: React.FC = () => {
             textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
             marginBottom: '1rem'
           }}>
-            Unleash Your Potential
+            Improve your score without extra effort
           </h1>
           <div className="hero-text-container">
             <p style={{ 
@@ -59,12 +74,13 @@ const HomePage: React.FC = () => {
               textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
               letterSpacing: '0.5px'
             }}>
-              Your AI Companion to Boost Your Score in Record Time
+              Your AI companion to get the best score in the least amount of time
             </p>
           </div>
         </Flex>
       </div>
-      <div className="cube-section">
+      <div className={styles.cubeSection}>
+        <h3 className={styles.sectionHeadingWhite}>Score depends on studying and planning</h3>
         <Flex alignItems="center" justifyContent="center" style={{ gap: '20px' }}>
           <Cube text="Score" customStyle={{ width: '400px', height: '400px' }}/>
           <EqualIcon 
@@ -89,20 +105,30 @@ const HomePage: React.FC = () => {
       <div className="mountain-section" style={{ backgroundImage: `url(${mountain})` }}>
         <div className="mountain-overlay"></div>
         <div className="mountain-content">
+          <h3 className={styles.sectionHeadingBlack}>Challenges in Planning</h3>
           <div className="mountain-cards">
-            <GlassLightComponent text="Card 1" width="80%" height="100%" />
-            <GlassLightComponent text="Card 2" width="80%" height="100%" />
-            <GlassLightComponent text="Card 3" width="80%" height="100%" />
-            <GlassLightComponent text="Card 4" width="80%" height="100%" />
+            <GlassLightComponent text="Difficult to establish strength & weakness without data" width="80%" height="100%" />
+            <GlassLightComponent text="Planning is complex and time-consuming" width="80%" height="100%" />
+            <GlassLightComponent text="Difficult to set realistic time for each chapter and concept" width="80%" height="100%" />
+            <GlassLightComponent text="Missing one session means replanning everything" width="80%" height="100%" />
           </div>
         </div>
       </div>
-      <div className="bottom-section">
-        <GlassmorphismComponent text="Adaptive Test" />
-        <div className="bottom-row">
-          <GlassmorphismComponent text="Personalized Assessment" />
+      <div className={styles.bottomSection}>
+        <GlassmorphismComponent 
+          text="Adaptive Test" 
+          className={highlightedCard === 'adaptive' ? styles.highlighted : ''}
+        />
+        <div className={styles.bottomRow}>
+          <GlassmorphismComponent 
+            text="Personalized Assessment" 
+            className={highlightedCard === 'personalized' ? styles.highlighted : ''}
+          />
           <Speedometer />
-          <GlassmorphismComponent text="Learning Track" />
+          <GlassmorphismComponent 
+            text="Learning Track" 
+            className={highlightedCard === 'learning' ? styles.highlighted : ''}
+          />
         </div>
       </div>
       <div className="stairs-section" style={{
@@ -144,6 +170,6 @@ const HomePage: React.FC = () => {
       </div>*/}
     </div>
   );
-};
+}
 
 export default HomePage;

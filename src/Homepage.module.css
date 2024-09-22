@@ -1,0 +1,49 @@
+  
+  .bottomSection {
+    display: flex;
+    flex-direction: column;
+    padding: 40px; /* Increased overall padding */
+    gap: 30px; /* Add space between the top card and the bottom row */
+    background-color: #000000;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .bottomRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px; /* Add space between cards in the bottom row */
+    align-items: center;
+  }
+  
+  .highlighted {
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+  }
+  
+  .sectionHeadingBlack {
+    font-size: 2.5rem; /* Increase font size */
+    font-weight: bold; /* Make it bold */
+    margin-bottom: 2rem; /* Increased margin for more space before the cubes */
+    color: #000000; /* White text for visibility on black background */
+    text-align: center; /* Center the text if desired */
+    width: 100%; /* Ensure the heading takes full width */
+  }
+  
+  .sectionHeadingWhite {
+    font-size: 2.5rem; /* Increase font size */
+    font-weight: bold; /* Make it bold */
+    margin-bottom: 2rem; /* Increased margin for more space before the cubes */
+    color: #ffffff; /* White text for visibility on black background */
+    text-align: center; /* Center the text if desired */
+    width: 100%; /* Ensure the heading takes full width */
+  }
+
+  .cubeSection {
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+  }

@@ -1,13 +1,15 @@
 import React from 'react';
+import styles from '../Glass.module.css'; // Assuming you have a CSS module for this component
 
 interface GlassmorphismComponentProps {
   text: string;
+  className?: string;
 }
 
-const GlassmorphismComponent: React.FC<GlassmorphismComponentProps> = ({ text }) => {
+const GlassmorphismComponent: React.FC<GlassmorphismComponentProps> = ({ text, className }) => {
   return (
-    <div className='glass' style={{ margin: '55px' }}>
-      <h1 style={{ color: '#ffffff' }}>{text}</h1>
+    <div className={`glass ${styles.glassCard} ${styles.whiteText} ${className || ''}`}>
+      {text}
     </div>
   );
 };

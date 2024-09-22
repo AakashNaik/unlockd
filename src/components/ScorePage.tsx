@@ -1,39 +1,92 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Drawer, Typography, Tab, Tabs, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { fetchAuthSession } from 'aws-amplify/auth';
+import { parseISO, format } from 'date-fns';
+import styles from '../ScorePage.module.css';
 
 interface ScoreData {
   id: string;
-  userId: string;
-  date: string;
-  score: number;
-  correctAnswers: number;
-  wrongAnswers: number;
-  topic?: string;
+  UserId: string;
+  Date: string;
+  Score: number;
+  TestID: string;
+  Testtype: string;
+  TopicID: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
-const drawerWidth = 240;
 
 export function ScorePage() {
-  const [scoreData, setScoreData] = useState<ScoreData[]>([]);
+  const [mixScoreData, setMixScoreData] = useState<ScoreData[]>([]);
+  const [topicScoreData, setTopicScoreData] = useState<ScoreData[]>([]);
   const [activeTab, setActiveTab] = useState<'mix' | 'topic'>('mix');
   const [topics, setTopics] = useState<string[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string>('All');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const dataFetchedRef = useRef(false);
 
   useEffect(() => {
-    fetch('/sampleScoreData.json')
-      .then(response => response.json())
-      .then(data => {
-        const currentData = activeTab === 'mix' ? data.mixTests : data.topicTests;
-        setScoreData(currentData);
-        if (activeTab === 'topic') {
-          const uniqueTopics = Array.from(new Set(data.topicTests.map((test: ScoreData) => test.topic ?? '')));
-          setTopics(['All', ...uniqueTopics.filter((topic): topic is string => typeof topic === 'string')]);
-        }
-      });
-  }, [activeTab]);
+    const fetchAllMarks = async () => {
+      if (dataFetchedRef.current) return;
+      dataFetchedRef.current = true;
+
+      setIsLoading(true);
+      const session = await fetchAuthSession();
+      const idToken = session.tokens?.idToken?.toString();
+
+      try {
+        const fetchData = async (testType: 'mix' | 'single') => {
+          const params = new URLSearchParams({ Testtype: testType });
+          const response = await fetch(`https://euzz40iy52.execute-api.ap-south-1.amazonaws.com/dev/?${params.toString()}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${idToken}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          console.log("response", response);
+          return await response.json();
+        };
+
+        const [mixData, topicData] = await Promise.all([
+          fetchData('mix'),
+          fetchData('single')
+        ]);
+
+        const formatData = (data: any[]): ScoreData[] => data.map(item => ({
+          id: item.id,
+          UserId: item.UserId,
+          Date: item.Date,
+          Score: item.Score,
+          TestID: item.TestID,
+          Testtype: item.Testtype,
+          TopicID: item.TopicID,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt
+        }));
+
+        const formattedMixData = formatData(mixData);
+        const formattedTopicData = formatData(topicData);
+
+        setMixScoreData(formattedMixData);
+        setTopicScoreData(formattedTopicData);
+
+        const uniqueTopics = Array.from(new Set(formattedTopicData.map(test => test.TopicID).filter((topic): topic is string => topic !== null)));
+        setTopics(['All', ...uniqueTopics]);
+
+      } catch (error) {
+        console.error('Error fetching score data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAllMarks();
+  }, []);
 
   const handleTabChange = (_ : React.SyntheticEvent, newValue: 'mix' | 'topic') => {
     setActiveTab(newValue);
@@ -44,24 +97,29 @@ export function ScorePage() {
     setSelectedTopic(event.target.value);
   };
 
-  const filteredData = selectedTopic === 'All' ? scoreData : scoreData.filter(test => test.topic === selectedTopic);
+  const currentScoreData = activeTab === 'mix' ? mixScoreData : topicScoreData;
+  const filteredData = selectedTopic === 'All' ? currentScoreData : currentScoreData.filter(test => test.TopicID === selectedTopic);
+
+  const sortedData = filteredData
+    .map(item => ({
+      ...item,
+      Date: format(parseISO(item.Date), 'yyyy-MM-dd')
+    }))
+    .sort((a, b) => parseISO(a.Date).getTime() - parseISO(b.Date).getTime());
 
   const columns: GridColDef[] = [
-    { field: 'date', headerName: 'Date', width: 120 },
-    { field: 'score', headerName: 'Score', width: 100 },
-    { field: 'correctAnswers', headerName: 'Correct', width: 100 },
-    { field: 'wrongAnswers', headerName: 'Wrong', width: 100 },
+    { field: 'Date', headerName: 'Date', width: 120 },
+    { field: 'Score', headerName: 'Score', width: 100 },
     ...(activeTab === 'topic' ? [{ field: 'topic', headerName: 'Topic', width: 150 }] : []),
   ];
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box className={styles.container}>
       <Drawer
         variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box' },
+        className={styles.drawer}
+        classes={{
+          paper: styles.drawerPaper,
         }}
       >
         <Tabs
@@ -69,18 +127,18 @@ export function ScorePage() {
           onChange={handleTabChange}
           orientation="vertical"
           variant="scrollable"
-          sx={{ borderRight: 1, borderColor: 'divider' }}
+          className={styles.tabs}
         >
           <Tab label="Mix Test" value="mix" />
           <Tab label="Topic Test" value="topic" />
         </Tabs>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" className={styles.main}>
         <Typography variant="h4" gutterBottom>
           {activeTab === 'mix' ? 'Mix Test Scores' : 'Topic Test Scores'}
         </Typography>
         {activeTab === 'topic' && (
-          <FormControl sx={{ m: 1, minWidth: 120 }}>
+          <FormControl className={styles.formControl}>
             <InputLabel id="topic-select-label">Topic</InputLabel>
             <Select
               labelId="topic-select-label"
@@ -93,35 +151,44 @@ export function ScorePage() {
             </Select>
           </FormControl>
         )}
-        <Box sx={{ height: 400, mb: 4 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={filteredData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis domain={[0, 100]} />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="score" stroke="#8884d8" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </Box>
-        <Box sx={{ height: 400, width: '100%' }}>
-          <DataGrid
-            rows={filteredData}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
-            }}
-            pageSizeOptions={[5, 10, 25]}
-            checkboxSelection
-            disableRowSelectionOnClick
-          />
-        </Box>
+        {isLoading ? (
+          <Typography>Loading...</Typography>
+        ) : (
+          <>
+            <Box className={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={sortedData}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey="Date" 
+                    tickFormatter={(value) => format(parseISO(value), 'MMM dd')}
+                  />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip labelFormatter={(value) => format(parseISO(value), 'MMM dd, yyyy')} />
+                  <Legend />
+                  <Line type="monotone" dataKey="Score" stroke="#8884d8" />
+                </LineChart>
+              </ResponsiveContainer>
+            </Box>
+            <Box className={styles.gridContainer}>
+              <DataGrid
+                rows={filteredData}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: { pageSize: 5, page: 0 },
+                  },
+                }}
+                pageSizeOptions={[5, 10, 25]}
+                checkboxSelection
+                disableRowSelectionOnClick
+              />
+            </Box>
+          </>
+        )}
       </Box>
     </Box>
   );

@@ -1,0 +1,38 @@
+.container {
+    display: flex;
+  }
+  
+  .drawer {
+    width: 240px;
+    flex-shrink: 0;
+  }
+  
+  .drawerPaper {
+    width: 240px;
+    box-sizing: border-box;
+  }
+  
+  .tabs {
+    border-right: 1px solid;
+    border-color: divider;
+  }
+  
+  .main {
+    flex-grow: 1;
+    padding: 24px;
+  }
+  
+  .formControl {
+    margin: 8px;
+    min-width: 120px;
+  }
+  
+  .chartContainer {
+    height: 400px;
+    margin-bottom: 32px;
+  }
+  
+  .gridContainer {
+    height: 400px;
+    width: 100%;
+  }
