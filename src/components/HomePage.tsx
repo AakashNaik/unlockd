@@ -14,7 +14,7 @@ import customStairsSvg from "/Section 7.svg";
 //import SuccessAnimation from './SuccessAnimation';
 import EqualIcon from '@mui/icons-material/DragHandle';
 import AddIcon from '@mui/icons-material/Add';
-import styles from '../HomePage.module.css';  // Add this import
+import styles from '../Homepage.module.css';  // Add this import
 
 export function HomePage() {
   const [highlightedCard, setHighlightedCard] = useState<string | null>(null);
